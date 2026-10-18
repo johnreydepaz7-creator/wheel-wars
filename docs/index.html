@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Wheel Wars: Chaos Arena</title>
-<style>body{margin:0;padding:12px;font:15px system-ui,sans-serif;background:#111}</style></head><body>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Wheel Wars: Chaos Arena</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;font:15px system-ui,sans-serif;background:#0f0d24;overscroll-behavior:none}</style></head><body>
 <style>
-#ww{position:relative;max-width:560px;height:460px;margin:auto;border-radius:12px;overflow:hidden;background:#0f0d24;color:#fff}
+#ww{position:fixed;inset:0;overflow:hidden;background:#0f0d24;color:#fff;touch-action:none;user-select:none;-webkit-user-select:none}
 #ww [hidden]{display:none!important}
 #ww #ac{position:absolute;inset:0;width:100%;height:100%;display:block}
 #ww .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(10,8,30,.65);padding:12px;box-sizing:border-box}
@@ -36,7 +36,7 @@ const F=[["Robot","🤖"],["Ninja","🥷"],["Knight","🛡️"],["Wizard","🧙"
 const S=[[600,48,60,36,1.3,0,3],[210,14,125,34,.4,0,30],[450,23,50,36,.9,0,8],[210,31,55,150,1.1,"#a78bfa",5],[240,16,60,230,.8,"#facc15",15],[900,40,45,95,1.4,"#fb923c",20],[270,11,70,30,.6,0,15],[1020,34,38,46,1.5,0,0]];
 const COL=["#22d3ee","#a78bfa","#f472b6","#facc15","#4ade80","#fb923c","#60a5fa","#f87171"],TC=["#3b82f6","#ef4444"];
 const EL=["fire","ice","electric","void","wind"],ELC={fire:"#fb923c",ice:"#7dd3fc",electric:"#fde047",void:"#a855f7",wind:"#86efac"};
-const TAU=2*Math.PI,RM=matchMedia("(prefers-reduced-motion: reduce)").matches,WW=360,WH=460;
+const TAU=2*Math.PI,RM=matchMedia("(prefers-reduced-motion: reduce)").matches,WW=360;let WH=460;
 const $=id=>document.getElementById(id),mod=(v,m)=>((v%m)+m)%m,sleep=ms=>new Promise(r=>setTimeout(r,ms)),clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 let ac;
 const tick=()=>{try{ac??=new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.type="square";o.frequency.value=700;g.gain.value=.04;g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.04);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+.05)}catch{}};
@@ -73,8 +73,8 @@ const W=[Wheel(0,"#3b82f6"),Wheel(1,"#ef4444")];
 const startDiff=()=>{const i=Math.random()*F.length|0,j=(i+1+(Math.random()*(F.length-1)|0))%F.length;W[0].set(i);W[1].set(j)};startDiff();
 const KITE=[3,4];let U=[],P=[],FL=[],PT=[],phase="idle",shake=0,tf=0,over=0,winner=0;
 // gen = slime life (1..3); smaller slimes have less hp/damage and slower attacks
-const mk=(t,k,x,y,gen=1)=>({t,k,gen,x,y,sz:[1,1,.75,.55][gen],hp:S[k][0]*[1,1,.5,.25][gen],max:S[k][0]*[1,1,.5,.25][gen],df:[1,1,.6,.4][gen],af:[1,1,1.3,1.6][gen],cd:.5,at:Math.random()*6,lunge:0,flash:0,dead:0,dodge:0,dg:1,back:0,st:"",t2:0,did:0,ang:0,mv:0,dx:0,dy:t?-1:1,stun:0,para:0,aslow:0,mslow:0,burn:0,bd:0,bt:0,ctr:0,dd:0,bu:0,bs:0,rst:0});
-function spawn(){U=[mk(0,W[0].pick,180,55),mk(1,W[1].pick,180,405)];P=[];FL=[];PT=[];tf=0;over=0}
+const mk=(t,k,x,y,gen=1)=>({t,k,gen,x,y,sz:[1,1,.75,.55][gen],hp:S[k][0]*[1,1,.5,.25][gen],max:S[k][0]*[1,1,.5,.25][gen],df:[1,1,.6,.4][gen],af:[1,1,1.3,1.6][gen],cd:.5,at:Math.random()*6,lunge:0,flash:0,dead:0,dodge:0,dg:1,back:0,st:"",t2:0,did:0,ang:0,mv:0,dx:0,dy:t?-1:1,stun:0,para:0,aslow:0,mslow:0,burn:0,bd:0,bt:0,ctr:0,dd:0,bu:0,bs:0,rst:0,hs:null});
+function spawn(){U=[mk(0,W[0].pick,180,55),mk(1,W[1].pick,180,WH-55)];P=[];FL=[];PT=[];tf=0;over=0}
 const near=u=>{let b=null,bd=1e9;for(const e of U)if(e.t!=u.t&&e.hp>0){const d=Math.hypot(e.x-u.x,e.y-u.y);if(d<bd){bd=d;b=e}}return b};
 const pop=(u,l,c)=>FL.push({x:u.x+(Math.random()-.5)*16,y:u.y-30,l,t:0,c});
 // el: "fire","ice","electric","void","wind" (Wizard) or "breath" (Dragon). by: the attacker
@@ -120,17 +120,14 @@ function step(dt){
       }
       if(u.st){
         u.t2+=dt;u.mv=0;
-        if(u.st=="wind"){if(u.t2>=.6){u.st="fire";u.t2=0;u.did=0}}
+        if(u.st=="wind"){if(u.t2>=.6){u.st="fire";u.t2=0;u.hs=new Set()}}
         else{
-          if(!u.did){
-            u.did=1;
-            for(const o of U){
-              if(o.t==u.t||o.hp<=0)continue;
-              const a=Math.atan2(o.y-u.y,o.x-u.x),df=Math.abs(Math.atan2(Math.sin(a-u.ang),Math.cos(a-u.ang)));
-              if(Math.hypot(o.x-u.x,o.y-u.y)<=130&&df<=.55)hit(o,(s[1]+1+(Math.random()*5|0))*u.df,u,"breath");
-            }
+          for(const o of U){
+            if(o.t==u.t||o.hp<=0||u.hs.has(o))continue;
+            const dd=Math.hypot(o.x-u.x,o.y-u.y),a=Math.atan2(o.y-u.y,o.x-u.x),df=Math.abs(Math.atan2(Math.sin(a-u.ang),Math.cos(a-u.ang)));
+            if(dd<=150&&df<=.55+Math.atan2(20,Math.max(dd,20))){u.hs.add(o);hit(o,(s[1]+1+(Math.random()*5|0))*u.df,u,"breath")}
           }
-          for(let i=Math.ceil(dt*160);i--;){const a=u.ang+(Math.random()-.5)*.8,v=200+Math.random()*100;PT.push({x:u.x+Math.cos(u.ang)*20,y:u.y+Math.sin(u.ang)*20,vx:Math.cos(a)*v,vy:Math.sin(a)*v,t:.4,r:4+Math.random()*4,c:["#fde047","#fb923c","#ef4444"][i%3]})}
+          for(let i=Math.ceil(dt*160);i--;){const a=u.ang+(Math.random()-.5)*1.1,v=250+Math.random()*80;PT.push({x:u.x+Math.cos(u.ang)*20,y:u.y+Math.sin(u.ang)*20,vx:Math.cos(a)*v,vy:Math.sin(a)*v,t:.4,r:4+Math.random()*4,c:["#fde047","#fb923c","#ef4444"][i%3]})}
           if(u.t2>=.4){u.st="";u.cd=Math.max(0,s[4]-1)}
         }
         continue;
@@ -185,7 +182,7 @@ function drawU(x,u,now){
   const bob=u.mv?Math.sin(u.at)*3:Math.sin(now/300+u.t)*1.5;
   if(u.hp<=0)a=Math.max(0,1-u.dead/.8);
   else if(phase=="over"&&winner==u.t)jump=Math.abs(Math.sin(over*5))*14;
-  if(u.st=="wind"){const p=u.t2/.6;x.globalAlpha=1;x.beginPath();x.moveTo(u.x,u.y);x.arc(u.x,u.y,130,u.ang-.55,u.ang+.55);x.closePath();x.fillStyle=`rgba(239,68,68,${.12+.25*p})`;x.fill();x.strokeStyle="rgba(239,68,68,.8)";x.lineWidth=2;x.stroke()}
+  if(u.st=="wind"||u.st=="fire"){const w=u.st=="wind",al=w?.12+.25*(u.t2/.6):.4*(1-u.t2/.4),rgb=w?"239,68,68":"251,146,60";x.globalAlpha=1;x.beginPath();x.moveTo(u.x,u.y);x.arc(u.x,u.y,130,u.ang-.55,u.ang+.55);x.closePath();x.fillStyle=`rgba(${rgb},${al})`;x.fill();x.strokeStyle=`rgba(${rgb},.8)`;x.lineWidth=2;x.stroke()}
   if(u.st=="fire"){const r=-6*(1-u.t2/.4);ox+=Math.cos(u.ang)*r;oy+=Math.sin(u.ang)*r}
   x.globalAlpha=a;
   x.beginPath();x.ellipse(u.x,u.y+18*z,18*z-jump/2,6*z-jump/5,0,0,TAU);x.fillStyle="rgba(0,0,0,.4)";x.fill();
@@ -205,7 +202,8 @@ function draw(now){
   const c=$("ac"),cw=c.clientWidth,ch=c.clientHeight,r=devicePixelRatio||1;
   if(!cw)return;
   if(c.width!==Math.round(cw*r)){c.width=Math.round(cw*r);c.height=Math.round(ch*r)}
-  const x=c.getContext("2d"),sc=Math.min(cw/WW,ch/WH);
+  WH=clamp(Math.round(WW*ch/cw),360,820);
+  const x=c.getContext("2d"),sc=cw/WW;
   x.setTransform(1,0,0,1,0,0);x.fillStyle="#0f0d24";x.fillRect(0,0,c.width,c.height);
   const sx=shake?(Math.random()-.5)*shake:0,sy=shake?(Math.random()-.5)*shake:0;
   x.setTransform(r*sc,0,0,r*sc,r*((cw-WW*sc)/2+sx),r*((ch-WH*sc)/2+sy));
