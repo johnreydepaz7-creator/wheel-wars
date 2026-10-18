@@ -16,11 +16,19 @@
 #ww .cd{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;background:rgba(10,8,30,.7);border:4px solid #fff;display:flex;align-items:center;justify-content:center;font-size:64px;font-weight:500}
 #ww #end{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:min(340px,92%);box-sizing:border-box;background:rgba(10,8,30,.88);border-radius:12px;padding:12px;text-align:center;font-weight:500}
 #ww .row{display:flex;gap:8px;justify-content:center;margin-top:10px}
+#ww h1{margin:0;font-size:36px;font-weight:600;letter-spacing:.5px}
+#ww h2.t{margin:0;font-size:22px;font-weight:500;text-align:center}
+#ww .sub{opacity:.7;font-size:14px;margin-top:-8px}
+#ww .big{width:min(260px,80%);padding:14px 16px;font-size:17px}
+#ww .pg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:min(320px,90%)}
+#ww .pg button{padding:12px 8px;font-size:16px}
+#ww #hb{position:absolute;left:10px;top:calc(10px + env(safe-area-inset-top,0px));padding:6px 12px;font-size:14px;z-index:5}
+#ww #tbar{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;gap:8px}
 </style>
 <div id="ww">
 <h2 style="position:absolute;left:-9999px">Two-dimensional battle arena where the fighters chosen by the wheels fight automatically</h2>
 <canvas id="ac" role="img" aria-label="Battle arena with the blue fighter at the top and the red fighter at the bottom"></canvas>
-<div class="ov" id="pop">
+<div class="ov" id="pop" hidden>
 <div class="g">
 <div class="p"><h3 style="color:#93c5fd">Blue team</h3><canvas id="c0" aria-hidden="true"></canvas><div class="res" id="r0" aria-live="polite">?</div></div>
 <div class="p"><h3 style="color:#fca5a5">Red team</h3><canvas id="c1" aria-hidden="true"></canvas><div class="res" id="r1" aria-live="polite">?</div></div>
@@ -29,12 +37,18 @@
 </div>
 <div class="cd" id="cd" role="timer" hidden></div>
 <div id="end" hidden><div id="endt" aria-live="polite"></div><div class="row"><button id="rem">Rematch</button><button id="again">Spin again</button></div></div>
+<div class="ov" id="home"><h1>Wheel Wars</h1><div class="sub">Chaos Arena</div><button class="big" id="bStart">Start</button><button class="big" id="bTest">Test mode</button></div>
+<div class="ov" id="tmenu" hidden><h2 class="t">Test mode</h2><button class="big" id="bDummy">Fighter vs Dummy</button><button class="big" id="bFvF">Fighter vs Fighter</button><button class="big" id="bTBack">Back</button></div>
+<div class="ov" id="picker" hidden><h2 class="t" id="ptitle"></h2><div class="pg" id="pgrid"></div><button class="big" id="pback">Back</button></div>
+<div id="tbar" hidden><button id="tadd">Add dummy</button><button id="treset">Reset</button></div>
+<button id="hb" hidden>Home</button>
 </div>
 <script>
 (()=>{
 const F=[["Robot","🤖"],["Ninja","🥷"],["Knight","🛡️"],["Wizard","🧙"],["Archer","🏹"],["Dragon","🐉"],["Slime","🟢"],["Giant","👹"]];
-const S=[[600,48,60,36,1.3,0,3],[210,14,125,34,.4,0,30],[450,23,50,36,.9,0,8],[210,31,55,150,1.1,"#a78bfa",5],[240,16,60,230,.8,"#facc15",15],[900,40,45,95,1.4,"#fb923c",20],[270,11,70,30,.6,0,15],[1020,34,38,46,1.5,0,0]];
+const S=[[600,48,60,36,1.3,0,3],[210,14,125,34,.4,0,30],[450,23,50,36,.9,0,8],[210,31,55,150,1.1,"#a78bfa",5],[240,16,60,230,.8,"#facc15",15],[900,40,45,95,1.4,"#fb923c",20],[270,11,70,30,.6,0,15],[1020,34,38,46,1.5,0,0],[800,0,0,0,9,0,0]];
 const COL=["#22d3ee","#a78bfa","#f472b6","#facc15","#4ade80","#fb923c","#60a5fa","#f87171"],TC=["#3b82f6","#ef4444"];
+const FI=k=>F[k]||["Dummy","🎯"];
 const EL=["fire","ice","electric","void","wind"],ELC={fire:"#fb923c",ice:"#7dd3fc",electric:"#fde047",void:"#a855f7",wind:"#86efac"};
 const TAU=2*Math.PI,RM=matchMedia("(prefers-reduced-motion: reduce)").matches,WW=360;let WH=460;
 const $=id=>document.getElementById(id),mod=(v,m)=>((v%m)+m)%m,sleep=ms=>new Promise(r=>setTimeout(r,ms)),clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -71,10 +85,13 @@ function Wheel(i,color){
 }
 const W=[Wheel(0,"#3b82f6"),Wheel(1,"#ef4444")];
 const startDiff=()=>{const i=Math.random()*F.length|0,j=(i+1+(Math.random()*(F.length-1)|0))%F.length;W[0].set(i);W[1].set(j)};startDiff();
-const KITE=[3,4];let U=[],P=[],FL=[],PT=[],phase="idle",shake=0,tf=0,over=0,winner=0;
+const KITE=[3,4];let U=[],P=[],FL=[],PT=[],phase="idle",shake=0,tf=0,over=0,winner=0,mode="",tk=0,sess=0;
 // gen = slime life (1..3); smaller slimes have less hp/damage and slower attacks
 const mk=(t,k,x,y,gen=1)=>({t,k,gen,x,y,sz:[1,1,.75,.55][gen],hp:S[k][0]*[1,1,.5,.25][gen],max:S[k][0]*[1,1,.5,.25][gen],df:[1,1,.6,.4][gen],af:[1,1,1.3,1.6][gen],cd:.5,at:Math.random()*6,lunge:0,flash:0,dead:0,dodge:0,dg:1,back:0,st:"",t2:0,did:0,ang:0,mv:0,dx:0,dy:t?-1:1,stun:0,para:0,aslow:0,mslow:0,burn:0,bd:0,bt:0,ctr:0,dd:0,bu:0,bs:0,rst:0,hs:null});
-function spawn(){U=[mk(0,W[0].pick,180,55),mk(1,W[1].pick,180,WH-55)];P=[];FL=[];PT=[];tf=0;over=0}
+function spawn(){
+  U=mode=="dummy"?[mk(0,tk,180,WH-110),mk(1,8,180,110)]:[mk(0,W[0].pick,180,55),mk(1,W[1].pick,180,WH-55)];
+  P=[];FL=[];PT=[];tf=0;over=0;
+}
 const near=u=>{let b=null,bd=1e9;for(const e of U)if(e.t!=u.t&&e.hp>0){const d=Math.hypot(e.x-u.x,e.y-u.y);if(d<bd){bd=d;b=e}}return b};
 const pop=(u,l,c)=>FL.push({x:u.x+(Math.random()-.5)*16,y:u.y-30,l,t:0,c});
 // el: "fire","ice","electric","void","wind" (Wizard) or "breath" (Dragon). by: the attacker
@@ -156,7 +173,7 @@ function step(dt){
       if(u.k==6&&u.gen<3){for(const sx of [-1,1])U.push(mk(u.t,6,clamp(u.x+sx*16,24,WW-24),u.y,u.gen+1));pop(u,"Split!","#4ade80")}
     }
     const al=[0,1].map(t=>U.some(u=>u.t==t&&u.hp>0));
-    if(!al[0]||!al[1]){phase="over";winner=al[0]?0:al[1]?1:-1;over=0}
+    if(mode!="dummy"&&(!al[0]||!al[1])){phase="over";winner=al[0]?0:al[1]?1:-1;over=0}
   }
   if(phase=="over"){
     over+=dt;
@@ -166,11 +183,15 @@ function step(dt){
         const k=W[winner].pick,hp=U.filter(u=>u.t==winner&&u.hp>0).reduce((a,u)=>a+u.hp,0);
         $("endt").textContent=`${winner?"Red":"Blue"} wins: ${F[k][1]} ${F[k][0]} with ${Math.round(hp)} hp left after ${tf.toFixed(1)}s`;
       }
-      $("end").hidden=false;
+      $("again").textContent=mode=="wheel"?"Spin again":"Change fighters";$("end").hidden=false;
     }
   }
-  for(const u of U){if(u.hp<=0)u.dead+=dt;u.dodge=Math.max(0,u.dodge-dt);if(phase!="fight")u.flash=Math.max(0,u.flash-dt)}
-  U=U.filter(u=>u.hp>0||u.dead<1);
+  for(const u of U){
+    if(u.hp<=0)u.dead+=dt;
+    if(u.k==8&&u.hp<=0&&u.dead>2){u.hp=u.max;u.dead=0;u.dd=0}
+    u.dodge=Math.max(0,u.dodge-dt);if(phase!="fight")u.flash=Math.max(0,u.flash-dt);
+  }
+  U=U.filter(u=>u.k==8||u.hp>0||u.dead<1);
   FL.forEach(f=>{f.t+=dt;f.y-=30*dt});FL=FL.filter(f=>f.t<.8);
   PT.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.t-=dt});PT=PT.filter(p=>p.t>0);
   shake=Math.max(0,shake-dt*30);
@@ -188,7 +209,7 @@ function drawU(x,u,now){
   x.beginPath();x.ellipse(u.x,u.y+18*z,18*z-jump/2,6*z-jump/5,0,0,TAU);x.fillStyle="rgba(0,0,0,.4)";x.fill();
   x.beginPath();x.arc(u.x,u.y+4*z,25*z,0,TAU);x.fillStyle=col+"44";x.fill();x.strokeStyle=col;x.lineWidth=3;x.stroke();
   x.font=40*z+"px serif";x.textAlign="center";x.textBaseline="middle";x.fillStyle="#fff";
-  x.fillText(F[u.k][1],u.x+ox,u.y+oy+bob-jump);
+  x.fillText(FI(u.k)[1],u.x+ox,u.y+oy+bob-jump);
   if(u.flash>0){x.beginPath();x.arc(u.x,u.y+bob,22*z,0,TAU);x.fillStyle="rgba(255,255,255,.55)";x.fill()}
   if(u.hp>0){
     const r=u.hp/u.max,bw=48*z,by=u.y-38*z;x.fillStyle="rgba(0,0,0,.55)";x.fillRect(u.x-bw/2,by,bw,6);
@@ -228,22 +249,53 @@ function draw(now){
 let last=performance.now();
 const loop=now=>{const dt=Math.min((now-last)/1000,.05);last=now;step(dt);draw(now);requestAnimationFrame(loop)};
 requestAnimationFrame(loop);
-const busy=b=>document.querySelectorAll("#ww button").forEach(e=>e.disabled=b);
+const busy=b=>document.querySelectorAll("#ww button:not(#hb)").forEach(e=>e.disabled=b);
 const labels=()=>W.forEach((w,i)=>$("r"+i).textContent=w.pick==null?"?":F[w.pick][1]+" "+F[w.pick][0]);
-async function ready(){
-  spawn();phase="ready";$("end").hidden=true;$("cd").hidden=false;
-  for(let n=3;n>0;n--){$("cd").textContent=n;await sleep(1000)}
-  $("cd").textContent="Go!";phase="fight";await sleep(600);$("cd").hidden=true;
+const IDS=["home","tmenu","picker","pop","cd","end","tbar"];
+const show=(...a)=>IDS.forEach(id=>$(id).hidden=!a.includes(id));
+function goHome(){sess++;phase="idle";mode="";U=[];P=[];FL=[];PT=[];show("home");$("hb").hidden=true;busy(false)}
+async function ready(my){
+  spawn();phase="ready";show("cd");
+  for(let n=3;n>0;n--){$("cd").textContent=n;await sleep(1000);if(my!=sess)return}
+  $("cd").textContent="Go!";phase="fight";await sleep(600);if(my!=sess)return;$("cd").hidden=true;
 }
 async function go(){
-  busy(true);phase="idle";U=[];P=[];FL=[];PT=[];W.forEach(w=>w.pick=null);labels();startDiff();
+  const my=++sess;busy(true);phase="idle";U=[];P=[];FL=[];PT=[];W.forEach(w=>w.pick=null);labels();startDiff();
   try{
-    await Promise.all(W.map(w=>w.spin(4200).then(i=>{w.pick=i;labels()})));
-    await sleep(1200);$("pop").hidden=true;await ready();
+    await Promise.all(W.map(w=>w.spin(4200).then(i=>{if(my==sess){w.pick=i;labels()}})));
+    if(my!=sess)return;
+    await sleep(1200);if(my!=sess)return;
+    await ready(my);
   }finally{busy(false)}
 }
+async function rematch(){const my=++sess;busy(true);try{await ready(my)}finally{busy(false)}}
+function startWheel(){mode="wheel";sess++;U=[];phase="idle";W.forEach(w=>w.pick=null);labels();startDiff();show("pop");$("hb").hidden=false}
+function startDummy(k){mode="dummy";sess++;tk=k;spawn();phase="fight";show("tbar");$("hb").hidden=false}
+function startFvF(a,b){mode="fvf";W[0].pick=a;W[1].pick=b;$("hb").hidden=false;rematch()}
+let pm="",ps=0,pk=0;
+function openPicker(m){pm=m;ps=0;$("ptitle").textContent=m=="dummy"?"Choose your fighter":"Blue team: choose a fighter";show("picker")}
+function choose(k){
+  if(pm=="dummy")return startDummy(k);
+  if(ps==0){pk=k;ps=1;$("ptitle").textContent="Red team: choose a fighter"}else startFvF(pk,k);
+}
+F.forEach((f,k)=>{const b=document.createElement("button");b.textContent=f[1]+" "+f[0];b.onclick=()=>choose(k);$("pgrid").append(b)});
+function addDummy(x,y){
+  if(mode!="dummy"||U.filter(u=>u.k==8).length>=5||(U[0]&&Math.hypot(U[0].x-x,U[0].y-y)<50))return;
+  U.push(mk(1,8,clamp(x,24,WW-24),clamp(y,24,WH-24)));
+}
+$("bStart").onclick=startWheel;
+$("bTest").onclick=()=>show("tmenu");
+$("bTBack").onclick=()=>show("home");
+$("bDummy").onclick=()=>openPicker("dummy");
+$("bFvF").onclick=()=>openPicker("fvf");
+$("pback").onclick=()=>{if(pm=="fvf"&&ps==1){ps=0;$("ptitle").textContent="Blue team: choose a fighter"}else show("tmenu")};
+$("hb").onclick=goHome;
 $("both").onclick=go;
-$("rem").onclick=async()=>{busy(true);try{await ready()}finally{busy(false)}};
-$("again").onclick=()=>{$("end").hidden=true;$("pop").hidden=false;go()};
+$("rem").onclick=rematch;
+$("again").onclick=()=>{if(mode=="wheel"){startWheel();go()}else openPicker("fvf")};
+$("tadd").onclick=()=>addDummy(40+Math.random()*(WW-80),40+Math.random()*(WH/2-40));
+$("treset").onclick=()=>{spawn();phase="fight"};
+$("ac").addEventListener("pointerdown",e=>{const r=e.currentTarget.getBoundingClientRect(),k=r.width/WW;addDummy((e.clientX-r.left)/k,(e.clientY-r.top)/k)});
+show("home");
 })();
 </script></body></html>
