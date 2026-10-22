@@ -105,9 +105,72 @@
 #ww #tmenu .big{padding:9px 10px;font-size:15px}
 #ww .ov{z-index:6}
 
+
+/* Simple, unmistakable result pause: winner in the center and just two actions. */
+#ww #end {
+  position:absolute;inset:0;left:0;bottom:0;transform:none;
+  display:grid;place-items:center;width:100%;height:100%;margin:0;
+  padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));
+  box-sizing:border-box;overflow-y:auto;text-align:center;
+  /* Let the completed arena and fighters remain recognizable behind the result. */
+  background:rgba(5,6,23,.40);backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);z-index:25;
+}
+#ww #end .end-panel {
+  width:min(420px,100%);box-sizing:border-box;padding:clamp(26px,6vw,42px) clamp(16px,5vw,32px);
+  background:linear-gradient(155deg,rgba(41,33,78,.90),rgba(23,19,49,.91) 60%,rgba(16,15,39,.91));
+  border:2px solid #facc1599;border-radius:22px;
+  box-shadow:0 22px 80px #0009,0 0 45px #facc1520;
+}
+#ww #end .end-winner {
+  margin:0 0 25px;font-size:clamp(30px,8vw,46px);font-weight:950;
+  letter-spacing:.4px;line-height:1.15;text-wrap:balance;color:#fde68a;
+  text-shadow:0 0 23px #facc1555;
+}
+#ww #end[data-result="blue"] .end-winner {color:#53a3ff;text-shadow:0 0 25px #3b82f67d}
+#ww #end[data-result="red"] .end-winner {color:#ff585e;text-shadow:0 0 25px #ef44447d}
+#ww #end[data-result="blue"] .end-panel {border-color:#60a5faad}
+#ww #end[data-result="red"] .end-panel {border-color:#f87171ad}
+#ww #end .row {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
+#ww #end .row button {min-width:0;min-height:48px;padding:11px 6px;border-radius:11px;font-weight:850;font-size:15px;touch-action:manipulation}
+#ww #end #rem {background:#facc15;color:#171027}
+#ww #end #again {background:#e2e8f0;color:#171027}
+#ww #end .row button:focus-visible {outline:3px solid #fff;outline-offset:3px}
+@media(max-height:430px){#ww #end .end-panel {padding:16px}#ww #end .end-winner {font-size:27px;margin-bottom:14px}}
+
 @keyframes ww-pulse{from{transform:scale(.96)}to{transform:scale(1.06)}}
 @media(prefers-reduced-motion:reduce){#ww .m-fighter{animation:none}}
 @media(max-height:620px){#ww #mirrorIntro{gap:5px}#ww .m-fighter{font-size:56px}#ww .m-name{font-size:24px}#ww .m-buff{padding:5px 6px}#ww .m-buff b{font-size:17px}#ww #mirrorIntro .sub{font-size:11px}#ww #mGo{padding:9px 10px}}
+
+/* Keep match information minimal, centered, and behind the actual fighters.
+   The canvas renderer paints essential HUD graphics before drawing characters. */
+#ww #battleHud,#ww #raidHud,#ww #chaosHud,#ww #challengeHud{display:none!important}
+#ww #hb{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));left:10px;
+  width:42px;height:42px;min-width:42px;display:grid;place-items:center;padding:0;
+  z-index:30;border:1px solid #ffffff55;border-radius:12px;color:#fff;background:#201c3ddd;
+  box-shadow:0 5px 20px #0004;touch-action:manipulation}
+#ww .burger-lines{display:flex;flex-direction:column;justify-content:center;gap:5px;width:21px;height:22px}
+#ww .burger-lines i{height:2.5px;width:21px;display:block;border-radius:8px;background:currentColor}
+#ww #hb[aria-expanded="true"]{background:#43366f}
+#ww #gameMenu{position:absolute;top:calc(60px + env(safe-area-inset-top,0px));left:10px;z-index:31;
+  width:min(278px,calc(100vw - 20px));box-sizing:border-box;border:1px solid #ffffff38;
+  border-radius:16px;padding:12px;background:#17132ef5;box-shadow:0 14px 50px #0009;
+  max-height:calc(100% - 82px);overflow-y:auto;touch-action:pan-y}
+#ww #gameMenuMain{display:grid;gap:9px}
+#ww #gameMenu button{color:#fff;background:#30264f;border:1px solid #ffffff23;border-radius:10px;
+  padding:11px 12px;min-height:41px;text-align:left;font-size:14px}
+#ww #gameMenu button:focus-visible,#ww #hb:focus-visible{outline:3px solid #facc15;outline-offset:2px}
+#ww #settingsPanel{display:grid;gap:8px}
+#ww #settingsPanel[hidden]{display:none!important}
+#ww .settings-heading{display:flex;align-items:center;gap:12px;margin:0 0 4px}
+#ww .settings-heading strong{font-size:17px}
+#ww #settingsBack{flex:0 0 40px;text-align:center!important;padding:5px!important}
+#ww #settingsPanel label{display:flex;justify-content:space-between;gap:10px;color:#e2e8f0;font-size:13px}
+#ww #settingsPanel output{color:#fde68a;font-variant-numeric:tabular-nums}
+#ww #settingsPanel input[type="range"]{width:100%;height:25px;margin:0 0 6px;cursor:pointer;accent-color:#facc15;touch-action:pan-x}
+#ww #settingsPanel #soundBtn,#ww #settingsPanel #wheelSoundBtn{
+  position:static;min-width:0;display:block;width:100%;box-sizing:border-box;font-size:14px;
+  margin:3px 0 0;padding:11px 12px;text-align:left;border-radius:10px;line-height:1.3}
+#ww #end .end-winner{font-weight:950;letter-spacing:1px}
 </style>
 <div id="ww">
 <h2 style="position:absolute;left:-9999px">Two-dimensional battle arena where the fighters chosen by the wheels fight automatically</h2>
@@ -122,7 +185,12 @@
 <button id="both">Spin both wheels</button>
 </div>
 <div class="cd" id="cd" role="timer" hidden></div>
-<div id="end" hidden><div id="endt" aria-live="polite"></div><div class="row"><button id="rem">Rematch</button><button id="again">Spin Again</button><button id="endHome">Home</button></div></div>
+<div id="end" hidden role="dialog" aria-modal="true" aria-labelledby="endWinner">
+  <div class="end-panel">
+    <h2 class="end-winner" id="endWinner" aria-live="polite">BLUE WINS!</h2>
+    <div class="row"><button id="rem">↻ Rematch</button><button id="again">🎡 Spin Again</button></div>
+  </div>
+</div>
 <div class="ov" id="home"><h1>Wheel Wars</h1><div class="sub">Chaos Arena</div><div class="mode-summary">🌪️ Chaos Shift · 🧬 Fusion · 🐉 Boss Raid · 🛡️ Squad Draft · 🌋 Survival · ⚔️ 1 vs 100</div><div class="synergy-summary">⚡ Synergies: 🏹+🐉 Flaming Arrows · 🛡️+🧙 Frozen Shatter · 🥷+🤖 Electric Backstab</div><button class="big" id="bStart">Start</button><button class="big" id="bTest">Test mode</button></div>
 <div class="ov" id="tmenu" hidden><h2 class="t">Test mode</h2><button class="big" id="bDummy">Fighter vs Dummy</button><button class="big" id="bFvF">⚔️ Fighter vs Fighter</button><button class="big" id="bFusion">🧬 Fusion Battle · 2-in-1</button><button class="big" id="bChaos">🌪️ Chaos Shift · 2v2 Random Zones</button><button class="big" id="bRaid">🐉 Boss Raid · 8 unique bosses</button><button class="big" id="bSurvival">🌋 Survival · One Passive Each Wave</button><button class="big" id="b10">⚔️ 10 vs 10 · Squad Draft</button><button class="big" id="bMirror">⚡ Mirror Mode</button><button class="big" id="b100">⚔️ 1 vs 100 · One Passive Spin</button><button class="big" id="bTBack">Back</button></div>
 <div class="ov" id="picker" hidden><h2 class="t" id="ptitle"></h2><div id="pickerDraft" hidden aria-live="polite"></div><div class="pg" id="pgrid"></div><button class="big" id="pback">Back</button></div>
@@ -144,11 +212,26 @@
   <button class="big" id="mGo">SPIN THE WHEELS ▶</button>
 </div>
 <div id="tbar" hidden><button id="tadd">Add dummy</button><button id="treset">Reset</button></div>
-<div id="raidHud" hidden aria-live="off"><strong id="raidName">🐉 BOSS RAID</strong><div id="raidHealthTrack"><span id="raidHealthBar"></span></div><div id="raidPhase">PHASE 1 · 5 HEROES</div><div id="raidSkill">⚡ Unique boss ability</div></div>
+<div id="raidHud" hidden aria-hidden="true"><strong id="raidName">BOSS HP</strong><div id="raidHealthTrack"><span id="raidHealthBar"></span></div><div id="raidShieldTrack" hidden><span id="raidShieldBar"></span></div><div id="raidPhase"></div><div id="raidSkill"></div></div>
 <div id="battleHud" hidden aria-live="off"></div><div id="chaosHud" hidden aria-live="off">🌪️ SHIFT</div><div id="challengeHud" hidden aria-live="off"><strong id="chCount">0 / 100 defeated</strong><div id="chWave">Wave 1 / 20</div><div id="chHero">Hero health 100%</div><div class="ch-meter"><span id="chBar"></span></div><div id="chTrait"></div><div id="chPassives">Bonus passive: none</div><div id="chScaling" hidden></div><div id="chNext">A single bonus passive is active</div></div>
-<button id="hb" hidden>Home</button>
-<button id="soundBtn" type="button" aria-label="Mute all game sounds" aria-pressed="true" title="Toggle all game sounds">🔊 Sound On</button>
-<button id="wheelSoundBtn" type="button" aria-label="Mute spinning wheel sounds" aria-pressed="true" title="Wheel sounds only">🎡 Wheel: Soft</button>
+<button id="hb" type="button" aria-label="Open game menu" aria-haspopup="true" aria-controls="gameMenu" aria-expanded="false"><span class="burger-lines" aria-hidden="true"><i></i><i></i><i></i></span></button>
+<div id="gameMenu" hidden aria-label="Game menu">
+  <div id="gameMenuMain">
+    <button id="menuHome" type="button">⌂ Home</button>
+    <button id="menuSettings" type="button">⚙ Settings</button>
+  </div>
+  <div id="settingsPanel" hidden>
+    <div class="settings-heading"><button id="settingsBack" type="button" aria-label="Back to menu">←</button><strong>Settings</strong></div>
+    <label for="masterVolume">Master volume <output id="masterVolumeValue" for="masterVolume">100%</output></label>
+    <input id="masterVolume" type="range" min="0" max="100" step="1" value="100">
+    <label for="wheelVolume">Wheel volume <output id="wheelVolumeValue" for="wheelVolume">100%</output></label>
+    <input id="wheelVolume" type="range" min="0" max="100" step="1" value="100">
+    <label for="combatVolume">Battle volume <output id="combatVolumeValue" for="combatVolume">100%</output></label>
+    <input id="combatVolume" type="range" min="0" max="100" step="1" value="100">
+    <button id="soundBtn" type="button" aria-label="Mute all game sounds" aria-pressed="true">🔊 Sound On</button>
+    <button id="wheelSoundBtn" type="button" aria-label="Mute spinning wheel sounds" aria-pressed="true">🎡 Wheel: On</button>
+  </div>
+</div>
 </div>
 <script>
 (()=>{
@@ -209,11 +292,11 @@ const RAID_SKILLS=Object.freeze([
   {name:"TOXIC BLOOM",color:"#4ade80",call:"TOXIC BLOOM!"},
   {name:"CATACLYSM",color:"#fda4af",call:"EARTHQUAKE!"}
 ]);
-// Survival restores 8% of each surviving hero's max HP after a cleared wave.
+// Survival restores 30% of missing HP after each cleared wave, following any Split merge.
 // Enemies gain health, damage, movement speed and attack speed every wave.
 const SURVIVAL=Object.freeze({
   initialWaveSize:3,maxWaveSize:7,heroHealth:6,heroDamage:3.1,
-  recoveryPerWave:.08,enemyHealth:.34,enemyDamage:.40,
+  recoveryPerWave:.30,splitThreshold:.50,enemyHealth:.34,enemyDamage:.40,
   healthGrowth:.13,damageGrowth:.10,moveGrowth:.035,attackGrowth:.03
 });
 // Centralize per-wave multipliers so fighter stats and on-screen bonuses agree.
@@ -287,123 +370,128 @@ const TAU=2*Math.PI,RM=matchMedia("(prefers-reduced-motion: reduce)").matches,WW
 // before each following selection round. Blue and red spin together per round.
 const WHEEL_SPIN_EXTRA_MS=650, WHEEL_BETWEEN_SPINS_MS=2000;
 const $=id=>document.getElementById(id),mod=(v,m)=>((v%m)+m)%m,sleep=ms=>new Promise(r=>setTimeout(r,ms)),clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
-/** Warm, low-volume wheel audio. Independent wheel mute never disables combat. */
+/** Soft wheel ticks and a winning chime, without a continuous hiss or motor.
+ * The wheel toggle is independent of battle audio and stays safe on mobile.
+ */
 class WheelSound {
   constructor(){
-    this.ctx=null;this.lastClick=new Map();this.spins=new Map();this.noiseBuffer=null;
-    this.lastChime=-Infinity;this.enabled=true;this.wheelEnabled=true;
+    this.ctx=null;this.bus=null;this.masterGain=null;
+    this.masterVolume=1;this.wheelVolume=1;
+    this.spins=new Map();this.running=new Map();this.lastClick=new Map();this.lastChime=-Infinity;
+    this.enabled=true;this.wheelEnabled=true;
     try{
-      this.enabled=localStorage.getItem("wwWheelSound")!=="off"; // Historical setting mutes ALL audio.
+      this.enabled=localStorage.getItem("wwWheelSound")!=="off"; // Historical setting: all sounds.
       this.wheelEnabled=localStorage.getItem("wwWheelSfx")!=="off";
+      this.masterVolume=clamp(Number(localStorage.getItem("wwMasterVolume")??100)/100,0,1);
+      this.wheelVolume=clamp(Number(localStorage.getItem("wwWheelVolume")??100)/100,0,1);
     }catch{}
   }
+  // Browsers require the first AudioContext resume during a real click/tap/key press.
   unlock(){
     if(!this.enabled)return;
     try{
       const Context=window.AudioContext||window.webkitAudioContext;
       if(!Context)return;
-      if(!this.ctx)this.ctx=new Context();
+      if(!this.ctx){
+        this.ctx=new Context();
+        const a=this.ctx;
+        this.masterGain=a.createGain();this.masterGain.gain.value=this.masterVolume;
+        this.masterGain.connect(a.destination);
+        this.bus=a.createGain();this.bus.gain.value=.85*this.wheelVolume;
+        const limiter=a.createDynamicsCompressor();
+        limiter.threshold.value=-16;limiter.knee.value=16;limiter.ratio.value=3;
+        limiter.attack.value=.005;limiter.release.value=.12;
+        this.bus.connect(limiter).connect(this.masterGain);
+      }
       if(this.ctx.state==="suspended")this.ctx.resume().catch(()=>{});
-    }catch{} // Continue silently on devices without Web Audio support.
+    }catch{} // The game works even when a browser denies audio.
+  }
+  setMasterVolume(value){
+    this.masterVolume=clamp(Number(value)/100,0,1);
+    if(this.masterGain)this.masterGain.gain.setTargetAtTime(this.masterVolume,this.ctx.currentTime,.015);
+    try{localStorage.setItem("wwMasterVolume",String(Math.round(this.masterVolume*100)));}catch{}
+  }
+  setWheelVolume(value){
+    this.wheelVolume=clamp(Number(value)/100,0,1);
+    if(this.bus)this.bus.gain.setTargetAtTime(.85*this.wheelVolume,this.ctx.currentTime,.015);
+    try{localStorage.setItem("wwWheelVolume",String(Math.round(this.wheelVolume*100)));}catch{}
   }
   setEnabled(value){
     this.enabled=Boolean(value);
     try{localStorage.setItem("wwWheelSound",this.enabled?"on":"off");}catch{}
     if(this.enabled)this.unlock();
     else{
-      this.stopAll();
+      // Keep animation state so re-enabling during this spin can resume its sound.
+      for(const which of [...this.spins.keys()])this.stop(which);
       if(this.ctx?.state==="running")this.ctx.suspend().catch(()=>{});
     }
   }
   setWheelEnabled(value){
     this.wheelEnabled=Boolean(value);
     try{localStorage.setItem("wwWheelSfx",this.wheelEnabled?"on":"off");}catch{}
-    if(!this.wheelEnabled)this.stopAll();
-    else this.unlock();
+    if(this.wheelEnabled)this.unlock();
+    else for(const which of [...this.spins.keys()])this.stop(which);
   }
   get audible(){return this.enabled&&this.wheelEnabled&&this.ctx?.state==="running";}
-  // A short, rounded sound. Smooth attack avoids harsh clicks from oscillator startup.
-  pluck(frequency,duration=.065,volume=.009,delay=0,from=null){
-    if(!this.audible)return;
-    const a=this.ctx,t=a.currentTime+delay;
+  // Smooth wooden/marimba-like tone; release envelope prevents sharp digital pops.
+  pluck(frequency,duration=.07,volume=.035,delay=0,from=null,type="triangle"){
+    if(!this.audible||!this.bus)return;
+    const a=this.ctx,t=a.currentTime+delay,d=Math.max(.035,duration);
     try{
       const osc=a.createOscillator(),gain=a.createGain();
-      osc.type="sine";
+      osc.type=type;
       osc.frequency.setValueAtTime(from||frequency,t);
-      osc.frequency.exponentialRampToValueAtTime(frequency,t+duration);
+      osc.frequency.exponentialRampToValueAtTime(frequency,t+d*.75);
       gain.gain.setValueAtTime(.0001,t);
-      gain.gain.exponentialRampToValueAtTime(volume,t+.009);
-      gain.gain.exponentialRampToValueAtTime(.0001,t+duration);
-      osc.connect(gain).connect(a.destination);
-      osc.start(t);osc.stop(t+duration+.02);
+      gain.gain.exponentialRampToValueAtTime(volume,t+.005);
+      gain.gain.exponentialRampToValueAtTime(.0001,t+d);
+      osc.connect(gain).connect(this.bus);
+      osc.start(t);osc.stop(t+d+.015);
     }catch{}
-  }
-  makeNoise(){
-    const a=this.ctx;
-    if(this.noiseBuffer||!a)return;
-    const len=Math.round(a.sampleRate*.55);
-    this.noiseBuffer=a.createBuffer(1,len,a.sampleRate);
-    const data=this.noiseBuffer.getChannelData(0);
-    for(let i=0;i<len;i++)data[i]=(Math.random()*2-1)*.65;
   }
   stop(which){
-    const spin=this.spins.get(which);
-    if(!spin)return false;
-    this.spins.delete(which);
-    try{
-      const t=this.ctx.currentTime;
-      spin.gain.gain.cancelScheduledValues(t);
-      spin.gain.gain.setValueAtTime(Math.max(.0001,spin.gain.gain.value),t);
-      spin.gain.gain.exponentialRampToValueAtTime(.0001,t+.10);
-      spin.source.stop(t+.13);
-    }catch{}
-    return true;
+    // A spin now consists of discrete ticks only; there is no motor or gas/air loop.
+    return this.spins.delete(which);
   }
-  stopAll(){for(const which of [...this.spins.keys()])this.stop(which);}
+  stopAll(){this.running.clear();for(const which of [...this.spins.keys()])this.stop(which);}
   start(which){
-    this.stop(which); // Never layer a second whirr over an unfinished spin.
+    this.stop(which);
+    this.running.set(which,0);
     this.unlock();
-    if(!this.audible)return;
-    try{
-      this.makeNoise();
-      const a=this.ctx,source=a.createBufferSource(),filter=a.createBiquadFilter(),gain=a.createGain();
-      source.buffer=this.noiseBuffer;source.loop=true;
-      filter.type="lowpass";filter.frequency.value=650;filter.Q.value=.35;
-      gain.gain.setValueAtTime(.0001,a.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.014,a.currentTime+.22);
-      source.connect(filter).connect(gain).connect(a.destination);
-      source.start();
-      this.spins.set(which,{source,filter,gain});
-    }catch{} // A missing whoosh is better than interrupting gameplay.
+    if(!this.enabled||!this.wheelEnabled||!this.ctx||!this.bus)return;
+    this.spins.set(which,true);
+    this.lastClick.delete(which);
+    this.pluck(290,.075,.027,0,390);
   }
   update(which,progress){
-    if(!this.audible)return;
-    const spin=this.spins.get(which);
-    if(!spin)return;
-    const a=this.ctx,p=Math.max(0,Math.min(1,progress)),speed=Math.pow(1-p,2);
-    const loudness=.00015+.013*speed;
-    try{
-      spin.filter.frequency.setTargetAtTime(235+560*speed,a.currentTime,.065);
-      spin.gain.gain.setTargetAtTime(Math.max(.0001,loudness),a.currentTime,.075);
-    }catch{}
+    if(!this.running.has(which))return;
+    this.running.set(which,progress);
+    // Some browsers resume sound after the first tap; enable clicks mid-spin.
+    if(!this.spins.has(which)&&this.audible)this.start(which);
   }
   click(which,progress){
-    if(!this.audible||!this.spins.has(which)||progress<.48)return;
-    const now=performance.now(),minGap=100+Math.round(progress*90);
+    if(!this.audible||!this.spins.has(which))return;
+    const p=Math.max(0,Math.min(1,progress)),now=performance.now();
+    // Fast clicks at full speed evolve into distinct, satisfying final ticks.
+    const minGap=47+Math.round(p*72);
     if(now-(this.lastClick.get(which)??-Infinity)<minGap)return;
     this.lastClick.set(which,now);
-    // A soft wooden tap while slowing, instead of the previous shrill square-wave ratchet.
-    this.pluck(which==="mode"?210:which===1?185:195,.055,.008,0,300);
+    const note=(which==="mode"?360:which===1?320:340)-70*p;
+    const strength=.030+.023*p; // A small volume boost to the clean ticking only.
+    this.pluck(note,.044+.022*p,strength,0,note*1.28);
   }
   finish(which){
+    this.running.delete(which);
     const wasSpinning=this.stop(which);
     if(!wasSpinning||!this.audible)return;
     const now=performance.now();
-    // Paired wheels finish together: one pleasant result chime, not two competing bells.
-    if(now-this.lastChime<280)return;
+    // Synchronized team wheels get ONE short, rewarding chime rather than a cacophony.
+    if(now-this.lastChime<320)return;
     this.lastChime=now;
-    this.pluck(523,.21,.020,0,590);
-    this.pluck(659,.27,.013,.11,700);
+    this.pluck(330,.10,.040,0,410);
+    this.pluck(523,.25,.049,.075,545,"sine");
+    this.pluck(659,.31,.041,.19,680,"sine");
+    this.pluck(784,.41,.033,.31,810,"sine");
   }
 }
 const wheelSound=new WheelSound();
@@ -412,17 +500,24 @@ const wheelSound=new WheelSound();
  * The existing wheel mute switch applies to every sound in the game.
  */
 class CombatSound {
-  constructor(wheel){this.wheel=wheel;this.context=null;this.bus=null;this.noiseBuffer=null;this.last=new Map();this.recent=[];}
+  constructor(wheel){this.wheel=wheel;this.context=null;this.bus=null;this.noiseBuffer=null;this.last=new Map();this.recent=[];
+    this.volume=1;try{this.volume=clamp(Number(localStorage.getItem("wwCombatVolume")??100)/100,0,1);}catch{}
+  }
+  setVolume(value){
+    this.volume=clamp(Number(value)/100,0,1);
+    if(this.bus)this.bus.gain.setTargetAtTime(.60*this.volume,this.context.currentTime,.015);
+    try{localStorage.setItem("wwCombatVolume",String(Math.round(this.volume*100)));}catch{}
+  }
   ready(){
     const a=this.wheel.ctx;
     if(!this.wheel.enabled||!a||a.state!=="running")return false;
     if(a!==this.context){
       this.context=a;
-      this.bus=a.createGain();this.bus.gain.value=.60;
+      this.bus=a.createGain();this.bus.gain.value=.60*this.volume;
       const limiter=a.createDynamicsCompressor();
       limiter.threshold.value=-20;limiter.knee.value=16;limiter.ratio.value=4;
       limiter.attack.value=.004;limiter.release.value=.15;
-      this.bus.connect(limiter).connect(a.destination);
+      this.bus.connect(limiter).connect(this.wheel.masterGain||a.destination);
       const size=Math.round(a.sampleRate*.45);
       this.noiseBuffer=a.createBuffer(1,size,a.sampleRate);
       const data=this.noiseBuffer.getChannelData(0);
@@ -532,6 +627,7 @@ const combatSound=new CombatSound(wheelSound);
 // Unlock audio during a genuine user interaction (needed on mobile browsers).
 document.addEventListener("pointerdown",()=>wheelSound.unlock(),{capture:true});
 document.addEventListener("keydown",()=>wheelSound.unlock(),{capture:true});
+document.addEventListener("click",()=>wheelSound.unlock(),{capture:true}); // Accessibility/keyboard-generated clicks.
 const ODDS=[12.5,12.5,12.5,12.5,12.5,12.5,12.5,12.5];
 const pick=()=>{let r=Math.random()*ODDS.reduce((a,b)=>a+b),i=0;while(r>=ODDS[i]&&i<ODDS.length-1)r-=ODDS[i++];return i};
 /** One spinning selection wheel; owns its canvas and animation state. */
@@ -845,6 +941,79 @@ class BattleEngine {
     }
     return null;
   }
+  // Warcraft-style arrival: make only the room the arriving fighter actually needs.
+  // Preview shifts before committing, so a crowded teleport cannot leave another
+  // fighter inside a wall or teleport the Assassin to the wrong side of the target.
+  makeRoomForArrival(arriving, desiredX, desiredY, fixed=null) {
+    const edge=arriving.collisionRadius+ARENA_EDGE_GAP;
+    const x=clamp(desiredX,edge,this.worldWidth-edge);
+    const y=clamp(desiredY,edge,this.height-edge);
+    if(fixed?.alive&&Math.hypot(x-fixed.x,y-fixed.y)<this.minDistance(arriving,fixed)-.05)return false;
+    const live=this.fighters.filter(v=>v.alive&&v!==arriving);
+    const moved=new Map(), maxPush=70, maxAffected=14;
+    const where=v=>moved.get(v)||[v.x,v.y];
+    // Begin with only the newcomer. Propagate clearance through directly
+    // touching neighbours, as a small ripple, never a whole-army displacement.
+    const queue=[arriving];let checks=0;
+    while(queue.length&&checks++<100){
+      const anchor=queue.shift();
+      const [ax,ay]=anchor===arriving?[x,y]:where(anchor);
+      for(const v of live){
+        if(v===anchor)continue;
+        const [vx,vy]=where(v),need=this.minDistance(v,anchor)+.2;
+        const dx=vx-ax,dy=vy-ay,dist=Math.hypot(dx,dy);
+        if(dist>=need-.05)continue;
+        if(v===fixed)return false; // Never move the backstab target itself.
+        const theta=dist>.001?Math.atan2(dy,dx):
+          Math.atan2(v.y-y,v.x-x)+(v.t?-.25:.25);
+        const margin=v.collisionRadius+ARENA_EDGE_GAP;
+        const px=clamp(vx+Math.cos(theta)*(need-dist),margin,this.worldWidth-margin);
+        const py=clamp(vy+Math.sin(theta)*(need-dist),margin,this.height-margin);
+        if(Math.hypot(px-vx,py-vy)<.04)return false; // blocked by arena edge
+        if(Math.hypot(px-v.x,py-v.y)>maxPush||(!moved.has(v)&&moved.size>=maxAffected))return false;
+        moved.set(v,[px,py]);
+        if(!queue.includes(v))queue.push(v);
+      }
+    }
+    if(queue.length)return false;
+    // Commit atomically only when the new circle and everyone displaced fits.
+    const affected=[arriving,...moved.keys()];
+    for(const v of affected){
+      const [vx,vy]=v===arriving?[x,y]:where(v);
+      for(const o of live){
+        if(o===v)continue;
+        const [ox,oy]=where(o);
+        if(Math.hypot(vx-ox,vy-oy)<this.minDistance(v,o)-.35)return false;
+      }
+    }
+    for(const [v,[px,py]] of moved){
+      this.moveInside(v,px,py);
+      v.navPath=[];v.navRepath=0;
+    }
+    this.moveInside(arriving,x,y);
+    return true;
+  }
+  // Keep a backstab behind the victim, even if a few nearby bodies must yield.
+  // Uses the victim's current target / facing, not a random open arena location.
+  placeBehindTarget(assassin,target){
+    const face=target.currentTarget?.alive&&target.currentTarget!==target?
+      [target.currentTarget.x-target.x,target.currentTarget.y-target.y]:
+      [target.dx||assassin.x-target.x,target.dy||assassin.y-target.y];
+    const length=Math.hypot(...face)||1;
+    const rear=Math.atan2(-face[1]/length,-face[0]/length);
+    const distance=this.minDistance(assassin,target)+3;
+    for(const diff of [0,.12,-.12,.25,-.25,.43,-.43,.60,-.60,.82,-.82]){
+      const a=rear+diff;
+      if(this.makeRoomForArrival(assassin,target.x+Math.cos(a)*distance,
+        target.y+Math.sin(a)*distance,target))return true;
+    }
+    // If the strict rear arc is beyond the wall, try the nearest unoccupied
+    // location on the same rear half before giving up the teleport.
+    const behind=(px,py)=> (px-target.x)*Math.cos(rear)+(py-target.y)*Math.sin(rear)>0;
+    const fallback=this.findFreeSpot(target.x+Math.cos(rear)*distance,target.y+Math.sin(rear)*distance,assassin);
+    if(fallback&&behind(...fallback)){this.moveInside(assassin,...fallback);return true;}
+    return false;
+  }
   // Iterative circle separation prevents both enemy and friendly units stacking.
   // Resolves knockback, ordinary walking and Slime splitting at the frame boundary.
   resolveCollisions() {
@@ -879,7 +1048,7 @@ spawn(){
   this.projectiles=[];this.floats=[];this.particles=[];this.fx=[];this.elapsed=0;this.over=0;this.resultReported=false;this.actionCounter=0;this.lineageCounter=0;
   this.pacing.reset();this.challenge=null;this.army=null;this.chaos=null;
   if(this.mode==="1v100"||this.mode==="survival"){
-    if(this.mode==="survival")this.challenge={spawned:0,defeated:0,wave:0,passives:new Set(),lastPassive:null,survival:true};
+    if(this.mode==="survival")this.challenge={spawned:0,defeated:0,wave:0,passives:new Set(),lastPassive:null,survival:true,splitUsed:false,splitRoot:null};
     const hero=this.makeFighter(0,this.selected,this.worldWidth/2,this.height*.73);
     this.fighters=[hero];this.registerLineage(hero);
     if(!this.challenge){
@@ -963,6 +1132,8 @@ formationPosition(team,i,total){
   const amount=c.survival?Math.min(SURVIVAL.maxWaveSize,SURVIVAL.initialWaveSize+Math.floor(c.wave/2)):Math.min(ONE_VS_100.waveSize,ONE_VS_100.total-c.spawned);
   if(c.survival){
     c.wave++;
+    // One 50%-HP Split activation is available per wave, including native Slime.
+    c.splitUsed=false;c.splitRoot=null;
     // Exactly one borrowed passive can be active during a Survival wave.
     // Avoid an identical reroll immediately after the previous wave.
     const available=F.map((_,i)=>i).filter(i=>i!==this.selected&&i!==c.lastPassive);
@@ -980,7 +1151,14 @@ formationPosition(team,i,total){
     const spot=randomAnywhere?this.randomChallengeSpawn(enemy):
       this.findFreeSpot(startX,startY,enemy)||this.findFreeSpot(this.worldWidth/2,this.height*.15,enemy);
     if(spot)this.moveInside(enemy,...spot);
-    else this.moveInside(enemy,startX,startY);
+    else if(!this.makeRoomForArrival(enemy,startX,startY)){
+      // At the rare fully packed spawn, defer this fighter to a free spot
+      // after one circle separation pass instead of stacking it on the hero.
+      this.resolveCollisions();
+      const retry=this.findFreeSpot(startX,startY,enemy);
+      if(retry)this.moveInside(enemy,...retry);
+      else this.moveInside(enemy,startX,startY);
+    }
     this.registerLineage(enemy);enemy.challengePrimary=true;this.fighters.push(enemy);c.spawned++;this.emitFx("summon",enemy.x,enemy.y,TC[enemy.t],{life:.48});
   }
   if(!c.survival)c.wave=Math.ceil(c.spawned/ONE_VS_100.waveSize);
@@ -998,18 +1176,62 @@ advanceChallenge(){
   if(!livingEnemies){
     if(c.survival){
       c.defeated=c.spawned;
-      // Restore exactly 8% of maximum HP to each living allied fighter,
-      // capped at maximum HP. Apply once when the last enemy of a wave falls.
-      for(const u of this.fighters)if(u.t===0&&u.alive){
-        u.hp=Math.min(u.max,u.hp+u.max*SURVIVAL.recoveryPerWave);
-        this.pop(u,"+8% HP","#86efac");
+      // A Survival Split rejoins its surviving halves at the end of the wave.
+      // Add CURRENT HP rather than max HP to prevent duplicating health.
+      const survivors=this.fighters.filter(u=>u.t===0&&u.alive);
+      if(c.splitRoot){
+        const root=c.splitRoot;
+        const combined=Math.min(root.max,survivors.reduce((sum,u)=>sum+u.hp,0));
+        const x=survivors.reduce((sum,u)=>sum+u.x,0)/survivors.length;
+        const y=survivors.reduce((sum,u)=>sum+u.y,0)/survivors.length;
+        const merged=this.makeFighter(0,root.k,x,y);
+        merged.lineage=root.lineage;
+        merged.hp=combined;
+        merged.challengePassives=new Set(root.challengePassives);
+        this.fighters=[merged];
+        c.splitRoot=null;
+        this.emitFx("split",merged.x,merged.y,"#4ade80",{r:40,life:.65,important:true});
+        this.pop(merged,"MERGED!","#4ade80");this.sfx("split");
+      }else this.fighters=survivors;
+      // Heal exactly 30% of remaining missing HP ONCE, after merging.
+      for(const u of this.fighters){
+        const recovered=(u.max-u.hp)*SURVIVAL.recoveryPerWave;
+        u.hp=Math.min(u.max,u.hp+recovered);
+        if(recovered>0.01)this.pop(u,`+${Math.round(recovered)} HP`,"#86efac");
       }
-      this.fighters=this.fighters.filter(u=>u.t===0&&u.alive);
     }
     // Survival rerolls its single active bonus when the next wave spawns.
     // 1 vs 100 keeps its one pre-battle wheel reward; no wave bonuses.
     this.spawnChallengeWave();
   }
+}
+// In Survival, native or borrowed Slime Split triggers at half HP instead of death.
+// Each child inherits half of the CURRENT HP; their combined maximum stays equal
+// to the original. Only the first 50%-HP crossing can split during a wave.
+triggerSurvivalSplit(u){
+  const c=this.challenge;
+  if(this.mode!=="survival"||!c?.survival||c.splitUsed||u.t!==0||u.gen!==1||
+     !u.alive||u.hp>u.max*SURVIVAL.splitThreshold||!(u.k===6||this.hasBonus(u,6)))return false;
+  c.splitUsed=true;c.splitRoot=u;
+  const availableHp=u.hp;
+  // Retire the parent before finding arrival spots so it cannot block children.
+  u.hp=0;u.dd=1;
+  for(const side of [-1,1]){
+    const child=this.makeFighter(0,u.k,u.x+side*24,u.y,2);
+    child.hp=Math.min(child.max,availableHp/2);
+    child.lineage=u.lineage;child.rootId=u.rootId;
+    child.bonus=u.bonus;child.chaosBonus=u.chaosBonus;
+    child.challengePassives=new Set(u.challengePassives);
+    if(!this.makeRoomForArrival(child,child.x,child.y)){
+      const spot=this.findFreeSpot(child.x,child.y,child);
+      if(spot)this.moveInside(child,...spot);
+      else this.moveInside(child,child.x,child.y);
+    }
+    this.fighters.push(child);
+    this.emitFx("split",child.x,child.y,"#4ade80",{r:29,life:.6,important:true});
+  }
+  this.pop(u,"SPLIT AT 50%!","#4ade80");this.sfx("split");
+  return true;
 }
 findBackSpawn(team,u){
   // Only spawn in the protected rear staging region, never in enemy territory.
@@ -1029,8 +1251,9 @@ spawnArmyReplacement(team){
   if(living>=20)return false;
   if(a.queue[team].length){
     const child=a.queue[team][0];
-    let pos=this.findFreeSpot(child.x,child.y,child);
-    if(pos&&Math.hypot(pos[0]-child.x,pos[1]-child.y)>120)pos=null;
+    const arrived=this.makeRoomForArrival(child,child.x,child.y);
+    let pos=arrived?[child.x,child.y]:this.findFreeSpot(child.x,child.y,child);
+    if(!arrived&&pos&&Math.hypot(pos[0]-child.x,pos[1]-child.y)>120)pos=null;
     if(!pos)pos=this.findBackSpawn(team,child);
     if(!pos)return false;
     a.queue[team].shift();this.moveInside(child,...pos);this.fighters.push(child);this.emitFx("split",child.x,child.y,"#4ade80",{life:.55});return true;
@@ -1362,25 +1585,23 @@ moveTowardTarget(u,e,dt){
 }
 
 pop(u,l,c){
-  // Damage numbers, frequent dodge/block and Fire Curse tick labels would fill
-  // the screen in 20-fighter battles. Animation/status icons still show effects.
+  // Only meaningful active abilities/passives deserve labels over the battlefield.
+  // Health is already drawn at each fighter, and waves are drawn at top center.
   if(this.phase==="fight"&&(
-    /^-\d/.test(l)||/^(Miss|BLOCKED!|Paralyzed!|Stunned!|Triple!|Acid!|Split!)$/.test(l)||
-    /^🔥 (?:Curse |-) /u.test(l)||/^🔥 (?:Curse|-) /u.test(l)||/^🔥 Curse /u.test(l)||
-    (this.mode==="team10"&&/^(Backstab!|CRIT|[A-Z]+!)/.test(l))||
-    (this.mode==="fusion"&&/^(Backstab!|CRIT)/.test(l))||
-    (this.mode==="chaos"&&/^(Backstab!|CRIT|[A-Z]+!)/.test(l))
+    /^-\d/.test(l)||l==="Miss"||/^🔥 (?:Curse |-) /u.test(l)||
+    /^🔥 (?:Curse|-)/u.test(l)||/^(WAVE |SURVIVAL WAVE |\+\d+ HP)/.test(l)
   ))return;
-  const limit=this.mode==="team10"?18:this.mode==="fusion"||this.mode==="chaos"?15:this.mode==="raid"?22:45;
+  const limit=this.mode==="team10"?14:this.mode==="fusion"||this.mode==="chaos"?12:this.mode==="raid"?16:26;
   if(this.floats.length>=limit)this.floats.shift();
-  this.floats.push({x:u.x+(Math.random()-.5)*16,y:u.y-30,l,t:0,c});
+  this.floats.push({x:u.x+(Math.random()-.5)*12,y:u.y-30,l,t:0,c});
 }
 backstab(u,e){
   if(!u.alive||!e||!e.alive)return;
   const startX=u.x,startY=u.y;
-  const a=Math.atan2(e.y-u.y,e.x-u.x),distance=this.minDistance(u,e)+8;
-  const position=this.findFreeSpot(e.x+Math.cos(a)*distance,e.y+Math.sin(a)*distance,u);
-  if(position)this.moveInside(u,...position);
+  // Reserve the actual rear of the target. Crowded fighters yield just
+  // enough space instead of sending the Assassin to a random nearby spot.
+  this.placeBehindTarget(u,e);
+  const a=Math.atan2(e.y-u.y,e.x-u.x);
   const travel=Math.hypot(u.x-startX,u.y-startY);
   if(travel>3){
     // An instant gameplay reposition remains an actual *shadow dash* on screen.
@@ -1413,6 +1634,8 @@ applyDamage(u,damage){
     }
   }
   u.hp=Math.max(0,u.hp-remaining);
+  // This also covers poison/burn and other damage outside normal attack hits.
+  if(remaining>0)this.triggerSurvivalSplit(u);
   return remaining;
 }
 applyBurn(u,damage=8,duration=3){
@@ -1728,6 +1951,15 @@ spawnChaosAreas(){
     warning:CHAOS_SHIFT.areaWarningSeconds,
     remaining:CHAOS_SHIFT.areaLifeSeconds}));
 }
+// A Chaos Shift target affects every living fighter whose circular hitbox
+// intersects the marked area, even when the fighter's center is just outside.
+// Keep this shared across burst hazards and persistent zones so their visible
+// target boundaries always match who receives the effect.
+chaosTargetOverlaps(zone,fighter){
+  const reach=zone.radius+fighter.collisionRadius;
+  const dx=fighter.x-zone.x,dy=fighter.y-zone.y;
+  return dx*dx+dy*dy<=reach*reach;
+}
 updateChaos(dt){
   const c=this.chaos;if(!c)return;
   if(!c.event||this.elapsed>=c.nextShift-1e-6)this.startChaosEvent();
@@ -1745,7 +1977,7 @@ updateChaos(dt){
       this.sfx("meteor",{important:false});
       this.shake=Math.max(this.shake,4);
       for(const u of this.fighters)if(u.alive&&u.chaosMeteorBatch!==m.batch&&
-        Math.hypot(u.x-m.x,u.y-m.y)<=m.radius+u.collisionRadius*.25){
+        this.chaosTargetOverlaps(m,u)){
         u.chaosMeteorBatch=m.batch; // One hit at most per fighter per volley.
         u.hp=Math.max(0,u.hp-u.max*CHAOS_SHIFT.meteorDamagePercent);u.flash=.22;
         this.emitFx("burn",u.x,u.y,"#fdba74",{r:30,life:.35,important:true});
@@ -1764,7 +1996,7 @@ updateChaos(dt){
       this.emitFx("lightning",strike.x,strike.y,"#67e8f9",{r:strike.radius,life:.52,important:true});
       this.sfx("lightning",{important:false});
       for(const u of this.fighters)if(u.alive&&u.chaosLightningBatch!==strike.batch&&
-        Math.hypot(u.x-strike.x,u.y-strike.y)<=strike.radius){
+        this.chaosTargetOverlaps(strike,u)){
         u.chaosLightningBatch=strike.batch;
         u.hp=Math.max(0,u.hp-u.max*CHAOS_SHIFT.lightningDamagePercent);
         u.stun=Math.max(u.stun,.30);u.flash=.2;
@@ -1783,7 +2015,7 @@ updateChaos(dt){
     c.zones=c.zones.filter(z=>z.remaining>0);
     for(const u of this.fighters)if(u.alive){
       // Zones take effect after their warning; effects don't stack across zones.
-      const zone=c.zones.find(z=>z.warning<=0&&Math.hypot(u.x-z.x,u.y-z.y)<=z.radius);
+      const zone=c.zones.find(z=>z.warning<=0&&this.chaosTargetOverlaps(z,u));
       if(!zone)continue;
       if(id==="ice"){
         u.mslow=Math.max(u.mslow,.25);u.aslow=Math.max(u.aslow,.25);
@@ -1818,6 +2050,8 @@ step(dt){
     this.elapsed+=dt;
     if(this.mode==="mirror")this.pacing.advance(this.elapsed,this.fighters,(f,l,c)=>this.pop(f,l,c));
     if(this.mode==="chaos")this.updateChaos(dt);
+    // Also handle a hero entering a new wave already at/below half HP.
+    if(this.mode==="survival")for(const u of this.fighters.slice())this.triggerSurvivalSplit(u);
     for(const u of this.fighters){
       if(!u.alive)continue;
       u.cd-=dt*(u.aslow>0?.6:1)*(u.chaosHaste?CHAOS_SHIFT.hasteAttacks:1)*
@@ -1962,7 +2196,8 @@ step(dt){
     for(const u of this.fighters.slice())if(!u.alive&&!u.dd){
       u.dd=1;
       if(this.army?.remaining&&this.mode==="army100")this.army.remaining[u.t]=Math.max(0,this.army.remaining[u.t]-1);
-      if(!u.isRaidBoss&&!u.isChaosClone&&(u.k===6&&u.gen<3||this.hasBonus(u,6)&&u.gen===1)){
+      if(!(this.mode==="survival"&&u.t===0)&&!u.isRaidBoss&&!u.isChaosClone&&
+         (u.k===6&&u.gen<3||this.hasBonus(u,6)&&u.gen===1)){
         const borrowed=u.k!==6&&this.hasBonus(u,6);
         const offsets=u.mirror&&u.gen===1?[-1,0,1]:[-1,1];
         for(const sx of offsets){
@@ -1973,9 +2208,16 @@ step(dt){
           if(this.army&&this.mode==="army100"){
             if(this.army.reserve[u.t]>0){this.army.reserve[u.t]--;this.army.queue[u.t].push(child);}
           }else{
-            const spot=this.findFreeSpot(child.x,child.y,child);
-            if(spot){this.moveInside(child,...spot);this.fighters.push(child);}else this.fighters.push(child);
-          this.emitFx("split",child.x,child.y,"#4ade80",{r:31,life:.60,important:true});
+            // Bud from the defeated Slime's position. The crowd parts only
+            // as much as needed for each new, smaller circle to appear.
+            const placed=this.makeRoomForArrival(child,child.x,child.y);
+            if(!placed){
+              const spot=this.findFreeSpot(child.x,child.y,child);
+              if(spot)this.moveInside(child,...spot);
+              else this.moveInside(child,child.x,child.y);
+            }
+            this.fighters.push(child);
+            this.emitFx("split",child.x,child.y,"#4ade80",{r:31,life:.60,important:true});
           }
         }
         this.pop(u,"Split!","#4ade80");this.emitFx("split",u.x,u.y,"#4ade80",{r:42,life:.55,important:true});this.sfx("split");
@@ -1985,7 +2227,11 @@ step(dt){
     if(this.mode==="raid")this.updateRaid(dt);
     if(this.challenge){
       const aliveLineages=this.countLineages(1);
-      if(!this.challenge.survival){const all=this.fighters.filter(u=>u.challengePrimary);this.challenge.defeated=all.filter(u=>!aliveLineages.has(u.lineage)).length;}
+      // Every spawned opponent has one lineage, including any Slime splits.
+      // Count completed lineages directly; do not keep 100 dead fighter objects
+      // alive in memory just to calculate the 1 vs 100 progress counter.
+      if(!this.challenge.survival)this.challenge.defeated=Math.max(
+        this.challenge.defeated,this.challenge.spawned-aliveLineages.size);
       this.advanceChallenge();
     }else if(this.army){
       if(this.mode==="army100")this.replenishArmy();
@@ -1993,7 +2239,11 @@ step(dt){
       const alive=[0,1].map(t=>this.fighters.some(u=>u.t===t&&u.alive));
       const viable=[0,1].map(t=>alive[t]||(this.mode==="army100"&&(this.army.reserve[t]>0||this.army.queue[t].length>0)));
       if(!viable[0]||!viable[1])this.finish(viable[0]?0:viable[1]?1:-1);
-    }else if(this.mode!=="dummy"){
+    }else if(this.mode==="dummy"){
+      // Training must still end if the player loses, rather than leaving a dead
+      // fighter and an immortal target on-screen with no exit / rematch.
+      if(!this.fighters.some(u=>u.t===0&&u.alive))this.finish(1);
+    }else{
       const alive=[0,1].map(t=>this.fighters.some(u=>u.t===t&&u.alive&&
         !(this.mode==="chaos"&&u.isChaosClone)));
       if(!alive[0]||!alive[1])this.finish(alive[0]?0:alive[1]?1:-1);
@@ -2010,7 +2260,7 @@ step(dt){
     u.dodge=Math.max(0,u.dodge-dt);
     if(this.phase!=="fight")u.flash=Math.max(0,u.flash-dt);
   }
-  this.fighters=this.fighters.filter(u=>u.k===8||u.alive||u.dead<.8||(u.challengePrimary&&this.mode==="1v100"));
+  this.fighters=this.fighters.filter(u=>u.k===8||u.alive||u.dead<.8);
   if(this.phase!=="fight")this.resolveCollisions();
   this.floats.forEach(f=>{f.t+=dt;f.y-=30*dt});this.floats=this.floats.filter(f=>f.t<.8);
   this.particles.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.t-=dt});this.particles=this.particles.filter(p=>p.t>0).slice(-(this.mode==="army100"?160:450));
@@ -2349,7 +2599,8 @@ drawFighter(x,u,now){
   }
   x.restore();
   if(u.flash>0){x.beginPath();x.arc(u.x,u.y+bob,22*z,0,TAU);x.fillStyle="rgba(255,255,255,.55)";x.fill()}
-  if(u.hp>0&&(!(this.battle.mode==="team10"||this.battle.mode==="army100")||u.hp<u.max-.01)){
+  // Raid bosses use only the top-center HP/shield HUD; never an extra bar above the boss.
+  if(u.hp>0&&!u.isRaidBoss&&(!(this.battle.mode==="team10"||this.battle.mode==="army100")||u.hp<u.max-.01)){
     const r=u.hp/u.max,bw=48*z,by=u.y-38*z;x.fillStyle="rgba(0,0,0,.55)";x.fillRect(u.x-bw/2,by,bw,6);
     x.fillStyle=`hsl(${r*120},80%,50%)`;x.fillRect(u.x-bw/2,by,bw*r,6);
   }
@@ -2369,6 +2620,60 @@ drawFighter(x,u,now){
   x.globalAlpha=1;
   x.restore();
 }
+drawArenaHud(x,W){
+  const b=this.battle;
+  if(!["ready","fight"].includes(b.phase))return;
+  const center=W/2;
+  // Very subtle background only; the fighter drawing pass goes on top of text and bars.
+  const panel=(width,height)=>{
+    x.fillStyle="rgba(11,9,30,.60)";x.beginPath();x.roundRect(center-width/2,8,width,height,8);x.fill();
+  };
+  const text=(label,y,color="#f8fafc",size=14)=>{
+    x.fillStyle=color;x.textAlign="center";x.textBaseline="middle";
+    x.font=`800 ${size}px system-ui,sans-serif`;x.fillText(label,center,y);
+  };
+  if(b.mode==="raid"&&b.raid){
+    const boss=b.fighters.find(u=>u.isRaidBoss);
+    if(!boss)return;
+    const width=Math.min(214,W-100),barWidth=width-20;
+    const shield=b.raid.shield;
+    panel(width,shield>0?58:42);
+    text("BOSS HP",20,"#fef3c7",12);
+    x.fillStyle="#ffffff31";x.fillRect(center-barWidth/2,31,barWidth,11);
+    x.fillStyle="#f43f5e";x.fillRect(center-barWidth/2,31,barWidth*clamp(boss.hp/boss.max,0,1),11);
+    if(shield>0){
+      // Each fresh shield begins with a full bar; it vanishes at zero.
+      const r=b.raid;
+      if(!r.shieldHudMax||r.shieldHudMax<shield)r.shieldHudMax=shield;
+      x.fillStyle="#ffffff31";x.fillRect(center-barWidth/2,49,barWidth,9);
+      x.fillStyle="#fde047";x.fillRect(center-barWidth/2,49,barWidth*clamp(shield/r.shieldHudMax,0,1),9);
+    }else b.raid.shieldHudMax=0;
+    return;
+  }
+  if((b.mode==="1v100"||b.mode==="survival")&&b.challenge){
+    const c=b.challenge,bonus=c.lastPassive;
+    const label=c.survival?`WAVE ${c.wave}`:`WAVE ${c.wave}/20`;
+    const name=bonus==null?null:`BONUS: ${PASSIVES[bonus].name}`;
+    panel(Math.min(W-100,Math.max(165,name?220:165)),name?51:31);
+    text(label,24,"#fde68a",15);
+    if(name)text(name,45,"#86efac",11);
+    return;
+  }
+  if(b.mode==="chaos"&&b.chaos?.event){
+    panel(Math.min(205,W-100),34);
+    text(b.chaos.event.emoji+" "+b.chaos.event.name,25,"#fde68a",13);
+    return;
+  }
+  if(b.army||b.mode==="team10"||b.mode==="fusion"){
+    const counts=[0,1].map(t=>new Set(b.fighters.filter(u=>u.t===t&&u.alive).map(u=>u.lineage||u)).size);
+    const numbers=b.mode==="army100"&&b.army?b.army.remaining:counts;
+    panel(184,33);
+    x.textAlign="right";x.textBaseline="middle";x.font="800 13px system-ui,sans-serif";
+    x.fillStyle="#60a5fa";x.fillText(`BLUE ${Math.max(0,numbers[0])}`,center-12,25);
+    x.fillStyle="#f8fafc";x.textAlign="center";x.fillText("·",center,25);
+    x.fillStyle="#f87171";x.textAlign="left";x.fillText(`${Math.max(0,numbers[1])} RED`,center+12,25);
+  }
+}
 draw(now){
   const c=this.canvas,cw=c.clientWidth,ch=c.clientHeight,r=devicePixelRatio||1;
   if(!cw)return;
@@ -2383,22 +2688,7 @@ draw(now){
   // The battlefield is a clean surface, with no floor gridlines.
   x.fillStyle="#3b82f633";x.fillRect(0,0,W,110);x.fillStyle="#ef444433";x.fillRect(0,this.battle.height-110,W,110);
   x.textAlign="center";x.textBaseline="alphabetic";x.fillStyle="#fff";x.font="13px system-ui,sans-serif";
-  // Team colors communicate spawn sides without permanent words.
-  if(this.battle.mode==="mirror"&&this.battle.phase==="fight"){
-    const secondsToNext=(this.battle.pacing.stage+1)*MIRROR_ATTACK_TIMING.intervalSeconds-this.battle.elapsed;
-    const fighter=this.battle.fighters.find(f=>f.mirror&&f.k<8);
-    const percentage=fighter?Math.round((fighter.attackSpeed(this.battle.pacing.bonus)-1)*100):0;
-    const stepPercent=Math.round(MIRROR_ATTACK_TIMING.increasePerStage*100);
-    x.save();
-    x.fillStyle="rgba(10,8,30,.90)";x.fillRect(184,31,169,55);
-    x.strokeStyle="rgba(250,204,21,.6)";x.lineWidth=1;x.strokeRect(184.5,31.5,168,54);
-    x.textAlign="center";x.font="bold 14px system-ui,sans-serif";
-    x.fillStyle="#fde68a";
-    x.fillText(`ATTACK SPEED +${percentage}%`,268,51);
-    x.font="12px system-ui,sans-serif";x.fillStyle="#cbd5e1";
-    x.fillText(`Next +${stepPercent}% in ${Math.max(0,Math.ceil(secondsToNext))}s`,268,69);
-    x.restore();
-  }
+  // Attack-speed activations are announced by the existing skill popup.
   if(this.battle.mode==="chaos"&&this.battle.chaos?.event){
     const ch=this.battle.chaos,ev=ch.event;
     x.save();
@@ -2514,14 +2804,7 @@ draw(now){
     }
     x.restore();
   }
-  // Ink dash is drawn under fighters; other hits and status effects overlay them.
-  for(const f of this.battle.fx)if(f.kind==="shadow-dash")this.drawFx(x,f);
-  [...this.battle.fighters].sort((a,b)=>a.y-b.y).forEach(u=>{this.drawBreath(x,u,now);this.drawAttack(x,u);this.drawFighter(x,u,now);});
-  for(const f of this.battle.fx)if(f.kind!=="shadow-dash")this.drawFx(x,f);
-  this.battle.particles.forEach(p=>{x.globalAlpha=clamp(p.t/.4,0,1);x.beginPath();x.arc(p.x,p.y,p.r||3,0,TAU);x.fillStyle=p.c;x.fill()});x.globalAlpha=1;
-  this.battle.projectiles.forEach(p=>this.drawProjectile(x,p,now));
-  x.font="bold 15px system-ui,sans-serif";x.textAlign="center";x.lineWidth=3;x.strokeStyle="#000";
-  this.battle.floats.slice(-(this.battle.mode==="army100"?Math.round(12*this.battle.visualQuality):this.battle.mode==="team10"?14:28)).forEach(f=>{x.globalAlpha=1-f.t/.8;x.strokeText(f.l,f.x,f.y);x.fillStyle=f.c||"#fff";x.fillText(f.l,f.x,f.y)});x.globalAlpha=1;
+  // Arena HUD and skill announcements sit UNDER fighters/HP bars, never over them.
   if(this.battle.mode==="mirror"&&this.battle.phase==="fight"&&this.battle.pacing.flash>0){
     x.save();x.globalAlpha=Math.min(1,this.battle.pacing.flash*1.5);
     x.fillStyle="rgba(10,8,30,.9)";x.fillRect(28,this.battle.height/2-43,WW-56,86);
@@ -2534,6 +2817,19 @@ draw(now){
     x.fillText(`Total attack speed: +${total}%`,WW/2,this.battle.height/2+22);
     x.restore();
   }
+  this.drawArenaHud(x,W);
+  x.font="bold 15px system-ui,sans-serif";x.textAlign="center";x.lineWidth=3;x.strokeStyle="#000";
+  this.battle.floats.slice(-(this.battle.mode==="army100"?Math.round(12*this.battle.visualQuality):this.battle.mode==="team10"?14:28)).forEach(f=>{
+    x.globalAlpha=1-f.t/.8;x.strokeText(f.l,f.x,f.y);
+    x.fillStyle=f.c||"#fff";x.fillText(f.l,f.x,f.y);
+  });x.globalAlpha=1;
+  // Ink dash is drawn under fighters; other hits and status effects overlay them.
+  for(const f of this.battle.fx)if(f.kind==="shadow-dash")this.drawFx(x,f);
+  [...this.battle.fighters].sort((a,b)=>a.y-b.y).forEach(u=>{this.drawBreath(x,u,now);this.drawAttack(x,u);this.drawFighter(x,u,now);});
+  for(const f of this.battle.fx)if(f.kind!=="shadow-dash")this.drawFx(x,f);
+  this.battle.particles.forEach(p=>{x.globalAlpha=clamp(p.t/.4,0,1);x.beginPath();x.arc(p.x,p.y,p.r||3,0,TAU);x.fillStyle=p.c;x.fill()});x.globalAlpha=1;
+  this.battle.projectiles.forEach(p=>this.drawProjectile(x,p,now));
+
 }
 
 }
@@ -2552,15 +2848,22 @@ class WheelWarsApp {
     requestAnimationFrame(now=>this.loop(now));
   }
 
+  closeGameMenu(){
+    $("gameMenu").hidden=true;
+    $("hb").setAttribute("aria-expanded","false");
+  }
   show(...screens) {
     for(const id of ["home","tmenu","picker","mirrorIntro","modeScreen","pop","cd","end","tbar","challengeHud","battleHud","raidHud","chaosHud"])
       $(id).hidden=!screens.includes(id);
-    // Show wheel-volume control only in menus/selection screens, never over the battle HUD.
-    $("wheelSoundBtn").hidden=!screens.some(id=>["home","tmenu","picker","modeScreen","pop","mirrorIntro"].includes(id));
+    // All sound controls now live in the hamburger menu, not above the arena.
+    this.closeGameMenu();
+    // Keep the menu reachable on the victory screen, so Home / other modes never become trapped.
+    $("hb").hidden=false;
     if(!screens.includes("modeScreen")&&!screens.includes("pop"))wheelSound.stopAll();
   }
   busy(value) {
-    document.querySelectorAll("#ww button:not(#hb):not(#soundBtn):not(#wheelSoundBtn)").forEach(button=>button.disabled=value);
+    // Never disable end-screen actions: a battle can finish during a transition.
+    document.querySelectorAll("#ww button:not(#hb):not(#gameMenu button):not(#rem):not(#again)").forEach(button=>button.disabled=value);
   }
   updateLabels() {
     this.wheels.forEach((wheel,i)=>$("r"+i).textContent=wheel.pick===null?"?":F[wheel.pick][1]+" "+F[wheel.pick][0]);
@@ -2578,13 +2881,18 @@ class WheelWarsApp {
       this.lastQualityUpdate=now;
       this.battle.visualQuality=this.smoothedFrame>.040?.30:this.smoothedFrame>.026?.60:1;
     }
-    this.battle.step(dt);
-    if((this.battle.mode==="1v100"||this.battle.mode==="survival")&&this.battle.challenge)this.updateChallengeHud();
-    if(this.battle.mode==="raid"&&this.battle.raid)this.updateRaidHud();
-    if(this.battle.army)this.updateArmyHud();
-    if(this.battle.mode==="fusion")this.updateFusionHud();
-    if(this.battle.mode==="chaos")this.updateChaosHud();
-    this.renderer.draw(now);
+    // Always schedule the next frame. A rare battle error must never freeze
+    // the entire UI, especially the 1 vs 100 rematch and Home controls.
+    try{
+      this.battle.step(dt);
+    }catch(error){
+      console.error("Battle update recovered:",error);
+      if(this.battle.phase!=="over")this.battle.finish(1);
+      this.battle.resultReported=true;
+      try{this.onMatchEnd(this.battle.winner,this.battle.elapsed,this.battle.fighters,this.battle.mode);}catch(e){console.error("Result display:",e);}
+    }
+    // Minimal HUD is painted directly by ArenaRenderer, below the characters.
+    try{this.renderer.draw(now);}catch(error){console.error("Arena drawing recovered:",error);}
     requestAnimationFrame(timestamp=>this.loop(timestamp));
   }
   updateChallengeHud(){
@@ -2609,18 +2917,21 @@ class WheelWarsApp {
     if(c.survival){
       const boosts=survivalEnemyBoosts(c.wave);
       const pct=multiplier=>`+${Math.round((multiplier-1)*100)}%`;
-      $("chScaling").textContent=`💚 +8% HP AFTER EACH WAVE · ENEMIES: HP ${pct(boosts.health)} · DMG ${pct(boosts.damage)} · MOVE ${pct(boosts.movement)} · ATK ${pct(boosts.attackSpeed)}`;
+      $("chScaling").textContent=`💚 HEAL 30% OF MISSING HP EACH WAVE · ENEMIES: HP ${pct(boosts.health)} · DMG ${pct(boosts.damage)} · MOVE ${pct(boosts.movement)} · ATK ${pct(boosts.attackSpeed)}`;
     }
     $("chNext").textContent=bonus==null?"No bonus selected":
-      `${PASSIVES[bonus].description} ${c.survival?"· After each wave: recover 8% max HP and reroll ONE passive":"· Locked for all 100 enemies"}`;
+      `${c.survival&&bonus===6?"Split at 50% HP; merge survivors after the wave.":PASSIVES[bonus].description} ${c.survival?"· After each wave: restore 30% of missing HP and reroll ONE passive":"· Locked for all 100 enemies"}`;
   }
   updateRaidHud(){
     const b=this.battle,r=b.raid,boss=b.fighters.find(u=>u.isRaidBoss);
     if(!boss||!r)return;
     const name=F[boss.k];$("raidName").textContent=`👑 ${name[1]} ${name[0]}`;
     $("raidHealthBar").style.width=`${Math.max(0,100*boss.hp/boss.max)}%`;
-    $("raidPhase").textContent=`P${r.phase}/3 · 👥 ${b.fighters.filter(u=>u.t===0&&u.alive).length}/5${r.shield>0?` · 🛡 ${Math.ceil(r.shield)} shield`:""}`;
-    $("raidSkill").textContent=`${F[boss.k][1]} ${RAID_SKILLS[boss.k].name}${r.warning?" · ⚠️ CASTING!":""}`;
+    $("raidPhase").textContent="";
+    const shieldBar=$("raidShieldTrack");
+    shieldBar.hidden=r.shield<=0;
+    $("raidShieldBar").style.width=r.shield>0?`${Math.min(100,100*r.shield/Math.max(1,boss.max*.1))}%`:"0%";
+    $("raidSkill").textContent="";
   }
   updateChaosHud(){
     const b=this.battle,c=b.chaos;
@@ -2827,7 +3138,7 @@ class WheelWarsApp {
     ++this.session;
     this.battle.reset();this.autoMain=false;this.configureFighterWheels();
     this.show("home");
-    $("hb").hidden=true;$("both").hidden=false;
+    $("hb").hidden=false;$("both").hidden=false;
     this.busy(false);
   }
   async ready(token) {
@@ -2835,7 +3146,7 @@ class WheelWarsApp {
     const cw=$("ac").clientWidth,ch=$("ac").clientHeight;
     this.battle.height=this.battle.worldWidth===WW?clamp(Math.round(WW*ch/Math.max(cw,1)),360,820):Math.round(this.battle.worldWidth*ch/Math.max(cw,1));
     this.battle.spawn();this.battle.phase="ready";
-    this.show(...((this.battle.mode==="1v100"||this.battle.mode==="survival")?["cd","challengeHud"]:(this.battle.mode==="team10"||this.battle.mode==="fusion")?["cd","battleHud"]:this.battle.mode==="chaos"?["cd","battleHud","chaosHud"]:this.battle.mode==="raid"?["cd","raidHud"]:this.battle.army?["cd","battleHud"]:["cd"]));
+    this.show(...((this.battle.mode==="1v100"||this.battle.mode==="survival")?["cd","challengeHud"]:(this.battle.mode==="team10"||this.battle.mode==="fusion")?["cd","battleHud"]:this.battle.mode==="chaos"?["cd","battleHud","chaosHud"]:this.battle.mode==="raid"?["cd","raidHud"]:this.battle.mode==="dummy"?["cd","tbar"]:this.battle.army?["cd","battleHud"]:["cd"]));
     for(let n=3;n>0;n--){
       $("cd").textContent=n;
       await sleep(1000);
@@ -3035,32 +3346,27 @@ class WheelWarsApp {
     const spot=b.findFreeSpot(x,y,dummy);
     if(spot){b.moveInside(dummy,...spot);b.fighters.push(dummy);}
   }
+  // Finished arenas are cleared only when the viewer actually chooses a new match.
+  // Keep the winner visible until then; never leave old fighters under a new picker.
+  clearFinishedMatch(){
+    if(this.battle.phase!=="over")return;
+    this.battle.clear();
+    this.battle.phase="idle";
+    this.battle.challenge=null;this.battle.army=null;this.battle.raid=null;this.battle.chaos=null;
+    $("end").hidden=true;
+  }
   onMatchEnd(winner,seconds,fighters,mode) {
-    const name=winner===0?"BLUE WINS!":winner===1?"RED WINS!":"DRAW!";
-    if(mode==="raid"){
-      const boss=this.battle.raid;const heroes=fighters.filter(u=>u.t===0&&u.alive).length;
-      $("endt").textContent=winner===0?`👑 RAID CLEARED! ${F[boss.kind][1]} ${F[boss.kind][0]} defeated · ${heroes} heroes survived · ${seconds.toFixed(1)}s`:`💀 RAID FAILED · Boss ${F[boss.kind][0]} survived · ${seconds.toFixed(1)}s`;
-    }else if(mode==="survival"){
-      const c=this.battle.challenge;
-      $("endt").textContent=`🌋 SURVIVAL ENDED · Reached wave ${c.wave} · ${c.spawned-this.battle.countLineages(1).size} defeated · ${seconds.toFixed(1)}s`;
-    }else if(mode==="1v100"){
-      $("endt").textContent=winner===0?`🏆 SURVIVAL COMPLETE · 100/100 defeated · ${seconds.toFixed(1)}s`:winner===-1?`⚔️ DRAW · ${this.battle.challenge.defeated}/100 eliminated`:`SURVIVAL ENDED · ${this.battle.challenge.defeated}/100 eliminated`;
-    }else if(mode==="chaos"){
-      $("endt").textContent=`🌪️ CHAOS SHIFT · ${name} · ${this.battle.chaos?.shift||0} shifts · ${seconds.toFixed(1)}s`;
-    }else if(mode==="fusion"){
-      const pairs=this.battle.fusionPicks;
-      $("endt").textContent=`🧬 FUSION · ${name} · 🔵 ${pairs[0].map(k=>F[k][1]).join("+")} vs ${pairs[1].map(k=>F[k][1]).join("+")} · ${seconds.toFixed(1)}s`;
-    }else if(mode==="team10"){
-      const counts=this.battle.army?.remaining||[0,0];
-      $("endt").textContent=`⚔️ 10 VS 10 · ${name} · 🔵 ${counts[0]} survivors vs ${counts[1]} 🔴 · ${seconds.toFixed(1)}s`;
-    }else if(mode==="army100"){
-      const counts=this.battle.army?.remaining||[0,0];$("endt").textContent=`${name} · 🔵 ${counts[0]}/${this.battle.army.total} vs ${counts[1]}/${this.battle.army.total} 🔴 · ${seconds.toFixed(1)}s`;
-    }else if(winner<0){$("endt").textContent="⚔️ DRAW! Both sides eliminated";}
-    else {const kind=this.wheels[winner].pick??0;
-      $("endt").textContent=`🏆 ${name} ${F[kind][1]} ${F[kind][0]} · ${seconds.toFixed(1)}s`;
-    }
-    $("again").textContent=this.autoMain?"Spin Again":"Change Fighters";
-    $("end").hidden=false;
+    const result=$("end"),heading=$("endWinner");
+    const blue=winner===0,red=winner===1;
+    result.dataset.result=blue?"blue":red?"red":"draw";
+    // Only the winning side is shown; no timing, details or extra instructions.
+    heading.textContent=blue?"BLUE WINS!":red?"RED WINS!":"DRAW!";
+    $("rem").textContent="↻ Rematch";
+    $("again").textContent="🎡 Spin Again";
+    // The finished game stays visible until the viewer selects a new match.
+    this.show("end");
+    $("rem").disabled=false;$("again").disabled=false;
+    $("rem").focus({preventScroll:true});
   }
   installControls() {
     const soundButton=$("soundBtn");
@@ -3074,10 +3380,10 @@ class WheelWarsApp {
     updateSoundLabel();
     const wheelButton=$("wheelSoundBtn");
     const updateWheelSoundLabel=()=>{
-      wheelButton.textContent=wheelSound.wheelEnabled?"🎡 Wheel: Soft":"🎡 Wheel: Off";
+      wheelButton.textContent=wheelSound.wheelEnabled?"🎡 Wheel: On":"🎡 Wheel: Off";
       wheelButton.setAttribute("aria-pressed",String(wheelSound.wheelEnabled));
       wheelButton.setAttribute("aria-label",wheelSound.wheelEnabled?"Mute spinning wheel sounds only":"Enable spinning wheel sounds");
-      wheelButton.title=wheelSound.wheelEnabled?"Mute wheel sounds, keep combat audio":"Enable gentle wheel sound effects";
+      wheelButton.title=wheelSound.wheelEnabled?"Mute wheel sounds, keep combat audio":"Enable satisfying wheel sound effects";
     };
     wheelButton.onclick=()=>{wheelSound.setWheelEnabled(!wheelSound.wheelEnabled);updateWheelSoundLabel();};
     updateWheelSoundLabel();
@@ -3124,13 +3430,39 @@ class WheelWarsApp {
         this.pickerStep=0;$("ptitle").textContent="Blue team: choose a fighter";
       } else this.show("tmenu");
     };
-    $("hb").onclick=()=>this.home();$("endHome").onclick=()=>this.home();
+    // Hamburger navigation and persistent sound preferences.
+    $("hb").onclick=()=>{
+      const open=$("gameMenu").hidden;
+      $("gameMenu").hidden=!open;
+      $("hb").setAttribute("aria-expanded",String(open));
+      if(open){$("settingsPanel").hidden=true;$("gameMenuMain").hidden=false;}
+    };
+    $("menuHome").onclick=()=>{this.closeGameMenu();this.home();};
+    $("menuSettings").onclick=()=>{$("gameMenuMain").hidden=true;$("settingsPanel").hidden=false;};
+    $("settingsBack").onclick=()=>{$("settingsPanel").hidden=true;$("gameMenuMain").hidden=false;};
+    for(const [id,initial,setter] of [
+      ["masterVolume",wheelSound.masterVolume,v=>wheelSound.setMasterVolume(v)],
+      ["wheelVolume",wheelSound.wheelVolume,v=>wheelSound.setWheelVolume(v)],
+      ["combatVolume",combatSound.volume,v=>combatSound.setVolume(v)]
+    ]){
+      const slider=$(id),value=$(id+"Value");
+      slider.value=String(Math.round(initial*100));value.textContent=slider.value+"%";
+      slider.addEventListener("input",()=>{value.textContent=slider.value+"%";setter(slider.value);});
+    }
+    $("hb").addEventListener("keydown",event=>{
+      if(event.key==="Escape")this.closeGameMenu();
+    });
+    $("gameMenu").addEventListener("keydown",event=>{
+      if(event.key==="Escape"){this.closeGameMenu();$("hb").focus();}
+    });
     $("both").onclick=()=>this.spinBoth();
-    $("rem").onclick=()=>this.rematch();
+    $("rem").onclick=()=>{this.clearFinishedMatch();this.rematch();};
     $("again").onclick=()=>{
+      // Clear the completed battle before presenting the next selection or countdown.
+      this.clearFinishedMatch();
       if(this.autoMain){this.startAutomatic();return;}
       if(this.battle.mode==="wheel"){this.startWheel();this.spinBoth();}
-      else this.openPicker(this.battle.mode==="raid"?"raid":this.battle.mode==="survival"?"survival":this.battle.mode==="mirror"?"mirror":this.battle.mode==="1v100"?"1v100":this.battle.mode==="team10"?"team10":this.battle.mode==="fusion"?"fusion":this.battle.mode==="chaos"?"chaos":"fvf");
+      else this.openPicker(this.battle.mode==="raid"?"raid":this.battle.mode==="survival"?"survival":this.battle.mode==="mirror"?"mirror":this.battle.mode==="1v100"?"1v100":this.battle.mode==="team10"?"team10":this.battle.mode==="fusion"?"fusion":this.battle.mode==="chaos"?"chaos":this.battle.mode==="dummy"?"dummy":"fvf");
     };
     $("tadd").onclick=()=>this.addDummy(40+Math.random()*(WW-80),40+Math.random()*(this.battle.height/2-40));
     $("treset").onclick=()=>{this.battle.spawn();this.battle.phase="fight";};
